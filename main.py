@@ -15,3 +15,52 @@ extrato_transacoes = []  # Usar uma lista para o extrato
 numero_saques_realizados = 0
 MAX_SAQUES_DIARIOS = 3
 
+print("Bem-vindo ao sistema bancário!")
+
+while True:
+    # Processar a opção do menu de forma mais robusta
+    opcao_escolhida = input(menu).strip().lower()
+
+    if opcao_escolhida == "d":
+        print("\n--- Depósito ---")
+        
+        valor_deposito = int(input("Informe o valor do depósito: "))
+        if valor_deposito > 0:
+            saldo_conta += valor_deposito
+            extrato_transacoes.append(f"Depósito: R$ {valor_deposito:.2f}")
+            print(f"Depósito de R$ {valor_deposito:.2f} realizado com sucesso!")
+        else:
+            print("Valor inválido para depósito.")
+
+    elif opcao_escolhida == "s":
+        print("\n--- Saque ---")
+        
+        valor_saque = int(input("Informe o valor do saque: R$"))
+        # Variável para o saques
+
+        if valor_saque > saldo_conta:
+            print("Saldo insuficiente para saque.")
+        elif valor_saque > limite_por_saque:
+            print(f"Valor acima do limite de saque de R$ {limite_por_saque:.2f}.")
+        elif numero_saques_realizados >= MAX_SAQUES_DIARIOS:
+            print(f"Limite diário de saques atingido ({MAX_SAQUES_DIARIOS} saques).")
+        elif valor_saque <= 0:
+            print("Valor inválido para saque.")
+        else:
+            saldo_conta -= valor_saque
+            extrato_transacoes.append(f"Saque: R$ {valor_saque:.2f}")
+            numero_saques_realizados += 1
+            print(f"Saque de R$ {valor_saque:.2f} realizado com sucesso!")
+
+    elif opcao_escolhida == "e":
+        print("\n================ EXTRATO ================")
+        if not extrato_transacoes:
+            print("Nenhuma transação realizada.")
+        else:
+            for transacao in extrato_transacoes:
+                print(transacao)
+        print(f"Saldo atual: R$ {saldo_conta:.2f}")
+        print("==========================================")
+    elif opcao_escolhida == "q":
+        print("Saindo do sistema. Até logo!")
+        break
