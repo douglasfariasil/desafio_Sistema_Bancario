@@ -26,7 +26,7 @@ while True:
     if opcao_escolhida == "d":
         print("\n--- Depósito ---")
         
-        valor_deposito = int(input("Informe o valor do depósito: R$ "))
+        valor_deposito = float(input("Informe o valor do depósito: R$ "))
 
         if valor_deposito > 0:
             saldo_conta += valor_deposito
@@ -38,7 +38,7 @@ while True:
     elif opcao_escolhida == "s":
         print("\n--- Saque ---")
         
-        valor_saque = int(input("Informe o valor do saque: R$ "))
+        valor_saque = float(input("Informe o valor do saque: R$ "))
 
         # Variável para o saques
         if valor_saque > saldo_conta:
