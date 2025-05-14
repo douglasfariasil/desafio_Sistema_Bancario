@@ -5,6 +5,8 @@ menu = """
 [s] Sacar
 [e] Extrato
 [q] Sair
+Escolha uma opção:
+Pressione enter para continuar...
 ======================================
 => """
 
@@ -64,7 +66,7 @@ while True:
                 print(transacao)
         print(f"\nSaldo atual: R$ {saldo_conta:.2f}")
         print("==========================================")
-        
+
     # Adicionando opção de sair do sistema
     elif opcao_escolhida == "q":
         print("Saindo do sistema. Até logo!")
