@@ -24,7 +24,8 @@ while True:
     if opcao_escolhida == "d":
         print("\n--- Depósito ---")
         
-        valor_deposito = int(input("Informe o valor do depósito: "))
+        valor_deposito = int(input("Informe o valor do depósito: R$ "))
+
         if valor_deposito > 0:
             saldo_conta += valor_deposito
             extrato_transacoes.append(f"Depósito: R$ {valor_deposito:.2f}")
@@ -35,9 +36,9 @@ while True:
     elif opcao_escolhida == "s":
         print("\n--- Saque ---")
         
-        valor_saque = int(input("Informe o valor do saque: R$"))
-        # Variável para o saques
+        valor_saque = int(input("Informe o valor do saque: R$ "))
 
+        # Variável para o saques
         if valor_saque > saldo_conta:
             print("Saldo insuficiente para saque.")
         elif valor_saque > limite_por_saque:
@@ -47,10 +48,12 @@ while True:
         elif valor_saque <= 0:
             print("Valor inválido para saque.")
         else:
+            # Se todas as validações passarem, realizar o saque
             saldo_conta -= valor_saque
             extrato_transacoes.append(f"Saque: R$ {valor_saque:.2f}")
             numero_saques_realizados += 1
             print(f"Saque de R$ {valor_saque:.2f} realizado com sucesso!")
+            print(f"Saques restantes hoje: {MAX_SAQUES_DIARIOS - numero_saques_realizados}")
 
     elif opcao_escolhida == "e":
         print("\n================ EXTRATO ================")
