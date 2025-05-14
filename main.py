@@ -62,8 +62,13 @@ while True:
         else:
             for transacao in extrato_transacoes:
                 print(transacao)
-        print(f"Saldo atual: R$ {saldo_conta:.2f}")
+        print(f"\nSaldo atual: R$ {saldo_conta:.2f}")
         print("==========================================")
+        
+    # Adicionando opção de sair do sistema
     elif opcao_escolhida == "q":
         print("Saindo do sistema. Até logo!")
         break
+    else:
+        print("Operação inválida. Por favor, selecione novamente a opção desejada usando as letras indicadas.")
+# Fim do código
