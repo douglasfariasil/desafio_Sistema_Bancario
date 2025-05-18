@@ -43,6 +43,30 @@ def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
         print(f"\nSaque de R$ {valor:.2f} realizado com sucesso!")
         return saldo, extrato, numero_saques # Retorna os valores atualizados
 
+    return saldo, extrato, numero_saques # Retorna o estado sem alteração em caso de falha   
+
+def visualizar_extrato(saldo, *, extrato):
+    """Exibe o extrato da conta."""
+    print("\n================ EXTRATO ================")
+    if not extrato:
+        print("Não foram realizadas movimentações.")
+    else:
+        for transacao in extrato:
+            data_hora_formatada = transacao['data_hora'].strftime("%d/%m/%Y %H:%M:%S")
+            tipo_transacao = transacao['tipo']
+            valor_transacao = abs(transacao['valor']) # Exibe o valor absoluto
+            print(f"{data_hora_formatada} - {tipo_transacao}: R$ {valor_transacao:.2f}")
+
+    print(f"\nSaldo: R$ {saldo:.2f}")
+    print("========================================")
+
+# --- Funções de Usuário e Conta ---  
+def filtrar_usuario(cpf, usuarios):
+    """Busca um usuário na lista pelo CPF."""
+    # Usa list comprehension para encontrar o usuário
+    usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
+    return usuarios_filtrados[0] if usuarios_filtrados else None # Retorna o primeiro encontrado ou None
+
 # Definição do menu visualmente um pouco melhor
 menu = """
 ================ MENU ================
