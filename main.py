@@ -1,5 +1,47 @@
-from datetime import datetime
+import textwrap  # Para formatar o endereço
+from datetime import datetime   # Para timesta
 
+
+# Constantes
+AGENCIA = "0001"
+LIMITE_SAQUE_VALOR = 500.0
+LIMITE_SAQUES_DIARIOS = 3
+MAX_TRANSACOES_DIARIAS = 10 # Novo limite de transações
+
+# --- Funções de Operações Bancárias ---
+def depositar(saldo, valor, extrato, /):
+    """Realiza a operação de depósito."""
+    if valor > o:
+        saldo += valor
+        agora = datetime.now()
+        extrato.append({'tipo': 'Depósito', 'valor': valor, 'data_hora': agora})
+        print(f"\nDepósito de R$ {valor:.2f} realizado com sucesso!")
+        return saldo, extrato
+    else:
+        print("\nOperação falhou! O valor informado é inválido.")
+        return saldo, extrato # Retorna o estado sem alteração
+
+def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
+    """Realiza a operação de saque."""
+    excedeu_saldo = valor > saldo
+    excedeu_limite = valor > limite
+    excedeu_saques = numero_saques >= limite_saques
+
+    if excedeu_saldo:
+        print("\nOperação falhou! Você não tem saldo suficiente.")
+    elif excedeu_limite:
+        print(f"\nOperação falhou! O valor do saque (R$ {valor:.2f}) excede o limite de R$ {limite:.2f}por saque.")
+    elif excedeu_saques:
+        print(f"\nOperação falhou! Número máximo de {limite_saques} saques diários atingido.")
+    elif valor <= 0:
+        print("\nOperação falhou! O valor informado é inválido.")
+    else:
+        saldo -= valor
+        numero_saques += 1
+        agora = datetime.now()
+        extrato.append({'tipo': 'Saque', 'valor': -valor, 'data_hora': agora})
+        print(f"\nSaque de R$ {valor:.2f} realizado com sucesso!")
+        return saldo, extrato, numero_saques # Retorna os valores atualizados
 
 # Definição do menu visualmente um pouco melhor
 menu = """
