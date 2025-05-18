@@ -67,6 +67,49 @@ def filtrar_usuario(cpf, usuarios):
     usuarios_filtrados = [usuario for usuario in usuarios if usuario["cpf"] == cpf]
     return usuarios_filtrados[0] if usuarios_filtrados else None # Retorna o primeiro encontrado ou None
 
+def criar_usuario(usuarios):
+    """Cadastra um novo usuário (cliente)."""
+    cpf = input("Informe o CPF (somente números): ")
+    usuario_existente = filtrar_usuario(cpf, usuarios)
+
+    if usuario_existente:
+        print("\n--- Erro: CPF já cadastrado! ---")
+        return
+
+    nome = input("Informe o nome completo: ")
+    data_nascimento = input("Informe a data de nascimento (dd-mm-aaaa): ") # Validação de data pode ser adicionada depois
+    endereco = input("Informe o endereço (logradouro, numero - bairro - cidade/sigla estado): ")
+
+    usuarios.append({"nome": nome, "data_nascimento": data_nascimento, "cpf": cpf, "endereco": endereco})
+    print("\n--- Usuário cadastrado com sucesso! ---")  
+
+def criar_conta_corrente(agencia, numero_conta_sequencial, usuarios, contas):
+    """Cria uma nova conta corrente para um usuário."""
+    cpf = input("Informe o CPF do usuário para vincular a conta: ")
+    usuario = filtrar_usuario(cpf, usuarios)
+
+    if not usuario:
+        print("\n--- Erro: Usuário não encontrado! ---")
+        return None # Retorna None se o usuário não existir
+
+    # Cria a conta com o próximo número sequencial
+    numero_conta = numero_conta_sequencial
+    contas.append({
+        "agencia": agencia,
+        "numero_conta": numero_conta,
+        "usuario": usuario, # Vincula o objeto usuário à conta
+        "saldo": 0.0,
+        "extrato": [],
+        "numero_saques_hoje": 0,
+        "numero_transacoes_hoje": 0 # Contador de transações para o limite diário por conta
+    })  
+    print(f"\n--- Conta criada com sucesso! ---")
+    print(f"\nAgência: {agencia}")
+    print(f"\nConta: {numero_conta}")
+    return numero_conta_sequencial + 1 # Retorna o próximo número sequencial a ser usado
+
+
+
 # Definição do menu visualmente um pouco melhor
 menu = """
 ================ MENU ================
