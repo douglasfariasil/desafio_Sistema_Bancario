@@ -9,12 +9,17 @@ LIMITE_SAQUES_DIARIOS = 3
 MAX_TRANSACOES_DIARIAS = 10 # Novo limite de transações
 
 # --- Funções de Operações Bancárias ---
+
 def depositar(saldo, valor, extrato, /):
     """Realiza a operação de depósito."""
-    if valor > o:
+    if valor > 0:
         saldo += valor
         agora = datetime.now()
-        extrato.append({'tipo': 'Depósito', 'valor': valor, 'data_hora': agora})
+        extrato.append({
+            'tipo': 'Depósito',
+            'valor': valor,
+            'data_hora': agora
+        })
         print(f"\nDepósito de R$ {valor:.2f} realizado com sucesso!")
         return saldo, extrato
     else:
@@ -39,7 +44,11 @@ def sacar(*, saldo, valor, extrato, limite, numero_saques, limite_saques):
         saldo -= valor
         numero_saques += 1
         agora = datetime.now()
-        extrato.append({'tipo': 'Saque', 'valor': -valor, 'data_hora': agora})
+        extrato.append({
+            'tipo': 'Saque',
+            'valor': -valor,
+            'data_hora': agora
+        })
         print(f"\nSaque de R$ {valor:.2f} realizado com sucesso!")
         return saldo, extrato, numero_saques # Retorna os valores atualizados
 
@@ -102,17 +111,65 @@ def criar_conta_corrente(agencia, numero_conta_sequencial, usuarios, contas):
         "extrato": [],
         "numero_saques_hoje": 0,
         "numero_transacoes_hoje": 0 # Contador de transações para o limite diário por conta
-    })  
+    })
+
     print(f"\n--- Conta criada com sucesso! ---")
     print(f"\nAgência: {agencia}")
     print(f"\nConta: {numero_conta}")
     return numero_conta_sequencial + 1 # Retorna o próximo número sequencial a ser usado
 
+def listar_contas(contas):
+    """Exibe a lista de contas cadastradas."""
+    if not contas:
+        print("\n--- Nenhuma conta cadastrada. ---")
+        return
 
+    print("\n=========== Contas Cadastradas ===========")
+    for conta in contas:
+        # Usando textwrap.dedent para remover identação para exibição limpa
+        linha = f"""\
+            Agência:\t{conta['agencia']}
+            Conta:\t\t{conta['numero_conta']}
+            Titular:\t{conta['usuario']['nome']}
+            Saldo:\t\tR$ {conta['saldo']:.2f}
+        """
+        print(textwrap.dedent(linha)) # Imprime a linha formatada
+        print("-" * 30) # Separador entre contas
+    print("==========================================")
+
+def recuperar_conta(contas):
+    """Solicita e busca uma conta na lista pelo número da conta e agência."""
+    if not contas:
+        print("\n--- Nenhuma conta cadastrada para realizar operações. ---")
+        return None
+
+    agencia_input = input("Informe a agência (padrão 0001): ") or AGENCIA # Assume 0001 se vazio
+    try:
+        numero_conta_input = int(input("Informe o número da conta: "))
+    except ValueError:
+        print("\nNúmero da conta inválido.")
+        return None
+
+    for conta in contas:
+        if conta['agencia'] == agencia_input and conta['numero_conta'] == numero_conta_input:
+            return conta # Retorna o dicionário da conta encontrada
+
+    print("\n--- Erro: Conta não encontrada! ---")
+    return None # Retorna None se a conta não existir
+
+# --- Menu Principal ---
+def main():
+    """Função principal que executa o menu do sistema bancário."""
+    usuarios = []  # Lista para armazenar usuários
+    contas = []  # Lista para armazenar contas
+    numero_conta_sequencial = 1  # Contador sequencial para o número da conta
 
 # Definição do menu visualmente um pouco melhor
-menu = """
+    menu = """
 ================ MENU ================
+[c] Cadastrar Usuário
+[cc] Cadastrar Conta Corrente
+[l] Listar Contas
 [d] Depositar
 [s] Sacar
 [e] Extrato
@@ -122,86 +179,85 @@ Pressione enter para continuar...
 ======================================
 => """
 
-# Variáveis iniciais com nomes mais descritivos e tipos apropriados
-saldo_conta = 0.0
-limite_por_saque = 500.0
-extrato_transacoes = []  # Usar uma lista para o extrato
-numero_saques_realizados = 0
-MAX_SAQUES_DIARIOS = 3
-MAX_TRANSACOES_DIARIAS = 10
-numero_transacoes_hoje = 0
+    print("Bem-vindo ao sistema bancário!")
 
-print("Bem-vindo ao sistema bancário!")
+    while True:
+        opcao = input(menu).strip().lower()
 
-while True:
-    # Processar a opção do menu de forma mais robusta
-    opcao_escolhida = input(menu).strip().lower()
+        if opcao == 'c':
+            criar_usuario(usuarios) # Passa a lista de usuários
 
-    if numero_transacoes_hoje >= MAX_TRANSACOES_DIARIAS and opcao_escolhida in ['d', 's']:
-        print(f"Limite de ({MAX_TRANSACOES_DIARIAS} transações diárias atingido. Tente novamente amanhã.)")
-        continue
+        elif opcao == 'cc':
+            # Passa a agência padrão, o contador, a lista de usuários e a lista de contas
+            resultado = criar_conta_corrente(AGENCIA, numero_conta_sequencial, usuarios, contas)
+            if resultado is not None: # Atualiza o contador apenas se a conta for criada
+                numero_conta_sequencial = resultado
 
-    if opcao_escolhida == "d":
-        print("\n--- Depósito ---")
-        
-        valor_deposito = float(input("Informe o valor do depósito: R$ "))
+        elif opcao == 'l':
+             listar_contas(contas) # Passa a lista de contas
 
-        if valor_deposito > 0:
-            saldo_conta += valor_deposito
-            agora = datetime.now()
-            extrato_transacoes.append({'tipo': 'Depósito', 'valor': valor_deposito, 'data_hora': agora})
-            numero_transacoes_hoje += 1
+        elif opcao in ('d', 's', 'e'):
+            # Para depositar, sacar ou extrato, primeiro recupera a conta
+            conta_cliente = recuperar_conta(contas)
 
-            # Adicionando o depósito ao extrato
-            print(f"Depósito de R$ {valor_deposito:.2f} realizado com sucesso!")
+            if conta_cliente: # Se a conta foi encontrada
+                 # Verifica o limite de transações diárias para ESTA conta
+                if conta_cliente['numero_transacoes_hoje'] >= MAX_TRANSACOES_DIARIAS:
+                    print(f"\nLimite de {MAX_TRANSACOES_DIARIAS} transações diárias atingido para esta conta. Tente novamente amanhã.")
+                    continue # Volta para o menu
+
+                # --- Executa a operação escolhida ---
+                if opcao == 'd':
+                    try:
+                        valor = float(input("Informe o valor do depósito: R$ "))
+                        # Chama a função depositar com argumentos posicionais
+                        novo_saldo, novo_extrato = depositar(conta_cliente['saldo'], valor, conta_cliente['extrato'])
+                        # Atualiza a conta com os valores retornados
+                        conta_cliente['saldo'] = novo_saldo
+                        conta_cliente['extrato'] = novo_extrato
+                        if valor > 0: # Incrementa a transação apenas se o depósito for válido
+                             conta_cliente['numero_transacoes_hoje'] += 1
+                    except ValueError:
+                        print("\nEntrada inválida. Por favor, digite um número.")
+
+                elif opcao == 's':
+                    try:
+                        valor = float(input("Informe o valor do saque: R$ "))
+                         # Chama a função sacar com argumentos nomeados
+                        novo_saldo, novo_extrato, novo_numero_saques = sacar(
+                            saldo=conta_cliente['saldo'],
+                            valor=valor,
+                            extrato=conta_cliente['extrato'],
+                            limite=LIMITE_SAQUE_VALOR,
+                            numero_saques=conta_cliente['numero_saques_hoje'],
+                            limite_saques=LIMITE_SAQUES_DIARIOS
+                        )
+                        # Atualiza a conta com os valores retornados
+                        conta_cliente['saldo'] = novo_saldo
+                        conta_cliente['extrato'] = novo_extrato
+                        conta_cliente['numero_saques_hoje'] = novo_numero_saques
+                        # Incrementa a transação apenas se o saque for válido (saldo, limite saque, limite saques, valor > 0)
+                        if novo_numero_saques > conta_cliente['numero_saques_hoje'] - 1: # Verifica se numero_saques aumentou
+                             conta_cliente['numero_transacoes_hoje'] += 1
+
+                    except ValueError:
+                         print("\nEntrada inválida. Por favor, digite um número.")
+
+                elif opcao == 'e':
+                    # Chama a função extrato com argumentos posicionais e nomeados
+                    visualizar_extrato(conta_cliente['saldo'], extrato=conta_cliente['extrato'])
+                    # Não incrementa numero_transacoes_hoje para extrato
+
+        elif opcao == 'q':
+            print("\nObrigado por usar nosso sistema modularizado. Até logo!")
+            break
+
         else:
-            print("Valor inválido para depósito.")
+            print("\nOperação inválida. Por favor, selecione novamente a operação desejada.")
 
-    elif opcao_escolhida == "s":
-        print("\n--- Saque ---")
-        
-        valor_saque = float(input("Informe o valor do saque: R$ "))
+# Executa a função principal quando o script é rodado
+if __name__ == "__main__":
+    main()
 
-        # Variável para o saques
-        if valor_saque > saldo_conta:
-            print("Saldo insuficiente para saque.")
+# O código foi modularizado para facilitar a manutenção e a legibilidade.
 
-        elif valor_saque > limite_por_saque:
-            print(f"Valor acima do limite de saque de R$ {limite_por_saque:.2f}.")
-
-        elif numero_saques_realizados >= MAX_SAQUES_DIARIOS:
-            print(f"Limite diário de saques atingido ({MAX_SAQUES_DIARIOS} saques).")
-
-        elif valor_saque <= 0:
-            print("Valor inválido para saque.")
-
-        else:
-            # Se todas as validações passarem, realizar o saque
-            saldo_conta -= valor_saque
-            agora = datetime.now()
-            extrato_transacoes.append({'tipo': 'Saque', 'valor': -valor_saque, 'data_hora': agora})
-            numero_saques_realizados += 1
-            numero_transacoes_hoje += 1
-            print(f"Saque de R$ {valor_saque:.2f} realizado com sucesso!")
-            print(f"Saques restantes hoje: {MAX_SAQUES_DIARIOS - numero_saques_realizados}")
-
-    elif opcao_escolhida == "e":
-        print("\n================ EXTRATO ================")
-        if not extrato_transacoes:
-            print("Nenhuma transação realizada.")
-        else:
-            for transacao in extrato_transacoes:
-                data_hora_formatada = transacao['data_hora'].strftime("%d/%m/%Y %H:%M:%S")
-                valor_formatada = f"R$ {abs(transacao['valor']):.2f}"
-                print(f"{data_hora_formatada} - {transacao['tipo']}: {valor_formatada}")
-                
-        print(f"\nSaldo atual: R$ {saldo_conta:.2f}")
-        print("==========================================")
-
-    # Adicionando opção de sair do sistema
-    elif opcao_escolhida == "q":
-        print("Saindo do sistema. Até logo!")
-        break
-    else:
-        print("Operação inválida. Por favor, selecione novamente a opção desejada usando as letras indicadas.")
-# Fim do código
