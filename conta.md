@@ -47,3 +47,46 @@ Data e Hora no Extrato:
 
 Mantido o uso de datetime.now() e o armazenamento da data/hora nos dicionários de transação dentro do extrato de cada conta. A exibição no extrato também formata a data/hora.
 Este código é significativamente mais complexo devido à modularização, gestão de usuários e contas
+
+# ------- ATENÇÃO--------
+
+Explicação das Mudanças e da Modelagem em POO:
+
+Classes Modeladas (UML):
+
+Pessoa: Classe base para Cliente. Contém atributos comuns como nome, data_nascimento e endereco. Usa @property para permitir acesso seguro (cliente.nome ao invés de cliente._nome).
+Cliente: Herda de Pessoa. Adiciona _cpf e uma lista _contas para armazenar os objetos ContaCorrente que o cliente possui. O cpf agora tem uma validação básica no __init__. O método realizar_transacao foi adicionado para o cliente delegar as operações para suas contas, mas a lógica principal da transação fica nas classes Deposito/Saque.
+Historico: Responsável por armazenar e gerenciar todas as transações de uma única conta. Possui uma lista _transacoes de objetos Transacao.
+Transacao: Classe abstrata/base para Deposito e Saque. Define _valor e _data_hora comuns a todas as transações. O método registrar é um placeholder (NotImplementedError) que deve ser implementado pelas subclasses.
+Deposito: Herda de Transacao. Implementa o método registrar que adiciona o valor ao saldo da conta, registra-se no histórico da conta e incrementa o contador de transações diárias da conta.
+Saque: Herda de Transacao. Implementa o método registrar que realiza as validações de saque (saldo, limite por saque, limite diário de saques) e, se bem-sucedido, subtrai do saldo, incrementa contadores e registra-se no histórico. As validações de limite_saque e limite_saques_diarios são acessadas via conta (que é uma ContaCorrente).
+Conta: Classe base para as contas. Contém _agencia, _numero, _cliente (referência ao objeto Cliente), _saldo, _historico (objeto Historico), _numero_saques_hoje e _numero_transacoes_hoje. Usa @property para todos os atributos e setters para saldo, numero_saques_hoje e numero_transacoes_hoje. O método nova_conta é um classmethod para criar instâncias. sacar é um método abstrato aqui, forçando subclasses a implementá-lo.
+ContaCorrente: Herda de Conta. Adiciona atributos específicos de conta corrente como _limite_saque e _limite_saques_diarios. Sobrescreve o método sacar para usar as validações específicas da Saque.
+Armazenamento de Dados em Objetos:
+
+As listas clientes e contas (no main()) agora armazenam objetos de Cliente e ContaCorrente, respectivamente, em vez de dicionários.
+As operações acessam os dados usando a notação de ponto (ex: cliente.cpf, conta.saldo).
+A vinculação de conta a cliente é feita ao passar o objeto Cliente para o construtor da ContaCorrente e ao adicionar o objeto ContaCorrente à lista _contas do objeto Cliente.
+Atualização dos Métodos do Menu (main()):
+
+cadastrar_cliente(clientes): Agora cria um objeto Cliente e o adiciona à lista clientes.
+criar_conta_corrente(numero_conta, clientes, contas):
+Procura o Cliente pelo CPF.
+Cria um objeto ContaCorrente usando ContaCorrente.nova_conta(), passando o numero_conta sequencial e o objeto Cliente encontrado.
+Adiciona o novo objeto ContaCorrente à lista global contas.
+Muito importante: Adiciona o mesmo objeto ContaCorrente à lista _contas do objeto Cliente (usando cliente.adicionar_conta(nova_conta)), estabelecendo o vínculo.
+realizar_deposito(clientes) / realizar_saque(clientes):
+Primeiro, recuperar_conta_cliente é usada para obter o objeto Cliente e o objeto ContaCorrente específicos que o usuário deseja operar.
+Verificação do limite de transações diárias (10 por conta): Agora é feita através do atributo conta.numero_transacoes_hoje na classe Cliente (cliente.realizar_transacao).
+Cria um objeto Deposito ou Saque (transacao_obj).
+Chama cliente.realizar_transacao(conta, transacao_obj) que, por sua vez, delega para transacao_obj.registrar(conta), onde a lógica real da transação ocorre e os atributos da conta são atualizados (saldo, historico, numero_saques_hoje, numero_transacoes_hoje).
+exibir_extrato(clientes): Também usa recuperar_conta_cliente. Uma vez com o objeto ContaCorrente, acessa seu historico (conta.historico.gerar_relatorio()) para exibir o extrato.
+listar_clientes_contas(clientes): Percorre a lista de objetos Cliente e, para cada cliente, acessa suas contas para exibir os detalhes.
+Benefícios da POO nesta implementação:
+
+Modularidade: O código está mais organizado em unidades lógicas (classes), facilitando a manutenção e a compreensão.
+Reuso de Código: Atributos e métodos comuns são definidos em classes base (Pessoa, Conta, Transacao) e reutilizados por classes filhas.
+Encapsulamento: Os atributos internos das classes (_saldo, _historico, etc.) são protegidos e acessados por métodos (@property) ou através de lógica de classe. Isso evita manipulação direta e inconsistente dos dados.
+Polimorfismo: Deposito e Saque podem ser tratados genericamente como Transacao em alguns contextos (ex: na lista historico), mas cada um implementa seu registrar de forma específica.
+Representação Realista: O modelo de classes reflete melhor as entidades do mundo real (clientes, contas, transações) e seus relacionamentos.
+Este é um modelo de partida robusto para um sistema bancário em POO.
