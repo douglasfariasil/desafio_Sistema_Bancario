@@ -270,8 +270,8 @@ class Cliente(Pessoa):
     """
     def __init__(self, nome, data_nascimento, cpf, endereco):
         super().__init__(nome, data_nascimento, cpf, endereco)
-        # if not cpf.isdigit() or len(cpf) != 11: # Exemplo de validação de CPF (apenas números, 11 dígitos)
-        #     raise ValueError("CPF inválido! Deve conter 11 dígitos numéricos.")
+        if not cpf.isdigit() or len(cpf) != 11: # Exemplo de validação de CPF (apenas números, 11 dígitos)
+            raise ValueError("CPF inválido! Deve conter 11 dígitos numéricos.")
         self._cpf = cpf
         self._contas = []  # Lista de contas associadas ao cliente
 
