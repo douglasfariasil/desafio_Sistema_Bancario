@@ -1,92 +1,121 @@
-# Sistema Bancário Simples em Python 
+# Sistema Bancário Simples em Python
 
 ## Descrição Geral
 
-Este projeto implementa um sistema bancário básico utilizando a linguagem Python, focado na simplicidade e demonstração de conceitos fundamentais de programação. O sistema permite ao usuário interagir através de um menu no console para realizar operações de depósito, saque e visualização de extrato.
+Este é um sistema bancário simples desenvolvido em Python, utilizando os princípios da Programação Orientada a Objetos (POO). Ele permite cadastrar clientes, criar contas correntes, realizar operações de depósito e saque, e visualizar o extrato das transações. O sistema também implementa limites diários para saques e para o número total de transações.
 
 ## Funcionalidades
 
-O sistema oferece as seguintes operações:
+Cadastro de Clientes: Permite registrar novos clientes com informações como nome, data de nascimento, CPF e endereço.
 
-1.  **Depositar (`d`)**:
-    * Permite ao usuário adicionar fundos à sua conta.
-    * **Entrada**: O valor do depósito é solicitado como um número inteiro (R$).
-    * **Validação**: O sistema verifica se o valor do depósito informado é positivo.
-    * **Registro**: Depósitos bem-sucedidos são registrados no extrato no formato "Depósito: R$ VALOR.00".
+Criação de Contas Correntes: Associa uma nova conta corrente a um cliente existente.
 
-2.  **Sacar (`s`)**:
-    * Permite ao usuário retirar fundos da conta.
-    * **Entrada**: O valor do saque é solicitado como um número inteiro (R$).
-    * **Validações e Regras (nesta ordem)**:
-        1.  Verifica se há `saldo_conta` suficiente.
-        2.  Verifica se o `valor_saque` não excede o `limite_por_saque` (R$ 500,00).
-        3.  Verifica se o `numero_saques_realizados` não atingiu o `MAX_SAQUES_DIARIOS` (3 saques).
-        4.  Verifica se o `valor_saque` é positivo (maior que zero).
-    * **Registro**: Saques bem-sucedidos são registrados no extrato no formato "Saque: R$ VALOR.00".
+Depósito: Realiza depósitos em contas, aumentando o saldo.
 
-3.  **Extrato (`e`)**:
-    * Exibe um histórico de todas as transações (depósitos e saques) realizadas na sessão atual.
-    * Ao final, mostra o saldo atual da conta, formatado com duas casas decimais (ex: "Saldo atual: R$ SALDO.00").
-    * Se nenhuma transação foi realizada, informa: "Nenhuma transação realizada."
+Saque: Permite saques, com validações para:
 
-4.  **Sair (`q`)**:
-    * Encerra a execução do sistema bancário com a mensagem "Saindo do sistema. Até logo!".
+Saldo insuficiente.
 
-## Como Executar
+Valor do saque excedendo o limite por transação (R$ 500.00).
 
-1.  **Pré-requisito**: Certifique-se de ter o Python 3 instalado.
-2.  **Salvar o Código**: Copie o código fornecido e salve-o em um arquivo com a extensão `.py` (ex: `meu_banco.py`).
-3.  **Abrir o Terminal/Prompt de Comando**.
-4.  **Navegar até o Diretório** onde o arquivo foi salvo.
-5.  **Executar o Script**:
-    ```bash
-    python meu_banco.py
-    ```
-6.  Siga as instruções do menu interativo.
+Número máximo de saques diários (3 saques).
 
-## Visão Geral da Implementação
+Extrato: Exibe o histórico de todas as transações (depósitos e saques) realizadas na conta, juntamente com o saldo atual.
 
-### Estrutura Principal
+Listagem de Contas: Mostra todos os clientes cadastrados e suas respectivas contas.
 
-* **Menu Interativo**: A variável `menu` contém o texto exibido ao usuário, solicitando a escolha de uma operação.
-* **Variáveis de Estado**:
-    * `saldo_conta`: (float) Armazena o saldo atual.
-    * `limite_por_saque`: (float) Define o teto de R$ 500,00 para cada saque.
-    * `extrato_transacoes`: (list) Lista que guarda o registro textual de cada transação.
-    * `numero_saques_realizados`: (int) Contador de saques na sessão.
-    * `MAX_SAQUES_DIARIOS`: (int) Constante para o limite de 3 saques diários.
-* **Loop de Execução**: Um loop `while True` mantém o programa ativo, processando as opções do usuário até que 'q' seja escolhido. A entrada do usuário é normalizada com `.strip().lower()`.
+Controle de Transações Diárias: Limita o número total de transações (depósitos e saques) por conta por dia (10 transações).
 
-### Lógica das Operações
+Log de Transações: Um decorador (@log_transacoes) registra todas as operações importantes em um arquivo log.txt, incluindo data, hora, função executada, argumentos e resultado.
 
-* **Depósito**:
-    * Converte a entrada do usuário para `int` com `int(input(...))`. **Atenção**: Não há tratamento para o caso do usuário digitar um texto não numérico, o que causaria um erro (`ValueError`) e encerraria o programa.
-    * Valida se o valor é positivo.
-    * Atualiza `saldo_conta` e adiciona ao `extrato_transacoes`.
+Estrutura do Código (POO)
+O sistema é modularizado usando classes para representar as entidades do banco:
 
-* **Saque**:
-    * Converte a entrada para `int` com `int(input(...))`. (Mesma atenção sobre `ValueError` do depósito).
-    * Aplica as validações na ordem especificada na seção "Funcionalidades".
-    * Se aprovado, atualiza `saldo_conta`, `numero_saques_realizados` e `extrato_transacoes`.
+Pessoa: Classe base para informações gerais de uma pessoa.
 
-* **Extrato**:
-    * Verifica se a lista `extrato_transacoes` está vazia e exibe a mensagem apropriada.
-    * Caso contrário, percorre a lista e imprime cada transação.
-    * Exibe o `saldo_conta` formatado ao final.
+PessoaFisica(Pessoa): Herda de Pessoa e adiciona o atributo cpf.
 
-* **Sair**: Interrompe o loop com `break`.
+Cliente(PessoaFisica): Representa um cliente bancário, gerencia suas contas e o método realizar_transacao.
 
-### Formato dos Valores
+Historico: Gerencia o registro de todas as transações de uma conta.
 
-* **Entrada**: Valores para depósito e saque são lidos como inteiros (`int`).
-* **Saída/Exibição**: No extrato e na exibição do saldo, os valores são formatados com duas casas decimais usando f-strings (ex: `f"R$ {valor:.2f}"`). Isso significa que, mesmo que a entrada seja um inteiro como `100`, será exibido como `R$ 100.00`.
+Transacao: Classe abstrata base para todas as operações financeiras (depósito, saque).
 
-## Limitações da Versão Atual
+Deposito(Transacao): Implementa a lógica de depósito.
 
-* **Entrada de Valores**: O sistema aceita apenas **números inteiros** para depósitos e saques. Não há suporte para centavos na entrada de valores.
-* **Tratamento de Erros de Entrada**: O código **não possui tratamento de erro** para entradas não numéricas (ex: letras ou símbolos) nos campos de valor de depósito ou saque. Se o usuário fornecer uma entrada inválida nesses campos, o programa será encerrado com um `ValueError`.
-* **Usuário Único**: Não há sistema de login ou diferenciação entre contas; todas as operações são feitas em uma conta única e implícita.
-* **Não Persistência de Dados**: Todos os dados (saldo, extrato, contador de saques) são armazenados em memória e **perdidos ao fechar o programa**.
-* **Reset de Limites Diários**: O contador de saques diários é zerado a cada nova execução do script.
+Saque(Transacao): Implementa a lógica de saque, incluindo as validações de limites.
 
-Este README visa descrever o funcionamento e as características do código fornecido.
+Conta: Classe base para uma conta bancária, com saldo, agência, número, cliente e histórico. Contém a lógica para resetar limites diários e incrementar contadores de transações.
+
+ContaCorrente(Conta): Herda de Conta e define os limites específicos para saques.
+
+Como Executar
+Salve o Código: Salve o código Python fornecido em um arquivo, por exemplo, sistema_bancario.py.
+
+Abra o Terminal/Prompt de Comando: Navegue até o diretório onde você salvou o arquivo.
+
+Execute o Script: Digite o seguinte comando e pressione Enter:
+
+python sistema_bancario.py
+
+Menu de Operações
+Ao executar o programa, você verá um menu de opções:
+
+[c] Cadastrar Usuário: Para criar um novo cliente.
+
+[cc] Criar Conta: Para vincular uma nova conta corrente a um cliente existente.
+
+[lc] Listar Contas: Para visualizar todos os clientes e suas contas.
+
+[d] Depositar: Para realizar um depósito em uma conta.
+
+[s] Sacar: Para realizar um saque de uma conta.
+
+[e] Extrato: Para visualizar o histórico de transações e o saldo de uma conta.
+
+[q] Sair: Para encerrar o programa.
+
+Exemplo de Uso:
+Cadastrar Cliente:
+
+=> c
+Informe o CPF (somente números): 12345678900
+Informe o nome completo: Maria Silva
+Informe a data de nascimento (dd-mm-aaaa): 01-01-1990
+Informe o endereço (logradouro, numero - bairro - cidade/sigla estado): Rua A, 123 - Centro - Cidade/SP
+--- Cliente cadastrado com sucesso! ---
+
+Criar Conta:
+
+=> cc
+Informe o CPF do cliente para vincular a conta: 12345678900
+--- Conta 0001/1 criada com sucesso para Maria Silva! ---
+
+Depositar:
+
+=> d
+Informe o CPF do cliente (somente números): 12345678900
+Contas do cliente:
+
+1. Agência: 0001, Conta: 1, Saldo: R$ 0.00
+   Selecione o número da conta (ex: 1 para a primeira): 1
+   Informe o valor do depósito: R$ 1000
+   Depósito de R$ 1000.00 realizado com sucesso na conta 0001/1!
+
+Exibir Extrato:
+
+=> e
+Informe o CPF do cliente (somente números): 12345678900
+Contas do cliente:
+
+1. Agência: 0001, Conta: 1, Saldo: R$ 1000.00
+   Selecione o número da conta (ex: 1 para a primeira): 1
+   ================ EXTRATO ================
+   [Data e Hora do Depósito] - Depósito: R$ 1000.00
+   Saldo atual: R$ 1000.00
+   ========================================
+
+Observações
+O arquivo log.txt será criado ou atualizado no mesmo diretório do script, registrando as operações.
+
+Os limites diários (saques e transações) são resetados automaticamente quando a data do sistema muda.
