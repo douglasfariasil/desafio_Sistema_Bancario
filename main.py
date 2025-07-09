@@ -339,12 +339,14 @@ class ContaCorrente(Conta):
             return False
 
     def __str__(self):
-        return textwrap.dedent(f"""\
+        return textwrap.dedent(
+            f"""\
             Agência:\t{self.agencia}
             C/C:\t\t{self.numero}
             Titular:\t{self.cliente.nome}
             Saldo:\t\tR$ {self.saldo:.2f}
-        """)  # Formatação melhorada para exibição da conta corrente
+        """
+        )  # Formatação melhorada para exibição da conta corrente
 
 
 # --- Funções Auxiliares do Sistema ---
