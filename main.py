@@ -172,7 +172,8 @@ class Deposito(Transacao):
             conta._creditar(self.valor)
             conta.historico.adicionar_transacao(self)
             print(
-                f"\nDepósito de R$ {self.valor:.2f} realizado com sucesso na conta {conta.agencia}/{conta.numero}!"
+                f"\nDepósito de R$ {self.valor:.2f} realizado com sucesso na,"
+                " conta {conta.agencia}/{conta.numero}!"
             )
             return True  # Retorna True se o depósito for registrado com sucesso
         return False
@@ -192,8 +193,10 @@ class Saque(Transacao):
             return False  # Verifica se o valor do saque não excede o saldo
         if self.valor > conta.limite_saque:
             print(
-                f"\nOperação falhou! O valor do saque (R$ {self.valor:.2f}) excede o limite de R$ {conta.limite_saque:.2f} por saque."
+                f"\nOperação falhou! O valor do saque (R$ {self.valor:.2f}),"
+                "excede o limite de R$ {conta.limite_saque:.2f} por saque."
             )
+
             return False  # Verifica se o valor do saque não excede o limite
         if conta.numero_saques_hoje >= conta.limite_saques_diarios:
             print(
@@ -260,7 +263,8 @@ class Conta:
         return self._numero_transacoes_hoje
 
     def _resetar_limites_diarios(self):
-        """Reseta os limites diários de saques e transações se a data atual for diferente da última transação."""
+        """Reseta os limites diários de saques e transações se a data atual
+        for diferente da última transação."""
         hoje = datetime.now().date()
         if hoje > self._ultima_data_transacao:
             self._numero_saques_hoje = 0
@@ -281,7 +285,8 @@ class Conta:
         if self._numero_transacoes_hoje >= MAX_TRANSACOES_DIARIAS:
             # Verifica se o limite diário de transações foi atingido
             print(
-                f"\n--- Erro: Limite de {MAX_TRANSACOES_DIARIAS} transações diárias atingido para a conta {self.agencia}/{self.numero}. ---"
+                f"\n--- Erro: Limite de {MAX_TRANSACOES_DIARIAS} transações diárias,"
+                "atingido para a conta {self.agencia}/{self.numero}. ---"
             )  # Mensagem de erro se o limite diário for atingido
             return False  # Retorna False se o limite diário de transações for atingido
         self._numero_transacoes_hoje += 1
@@ -414,7 +419,8 @@ def cadastrar_cliente(clientes):
         clientes.append(novo_cliente)
         print("\n--- Cliente cadastrado com sucesso! ---")
         print(
-            f"DEBUG: Cliente '{novo_cliente.nome}' (CPF: {novo_cliente.cpf}) CADASTRADO e adicionado à lista de clientes."
+            f"DEBUG: Cliente '{novo_cliente.nome}' (CPF: {novo_cliente.cpf}) CADASTRADO, "
+            " e adicionado à lista de clientes."
         )  # DEBUG
         return True
     except ValueError as e:
@@ -507,10 +513,12 @@ def listar_contas(clientes):
             print("  Contas:")
             for conta in cliente.contas:
                 log_output.append(
-                    f"    - Agência: {conta.agencia} | Conta: {conta.numero} | Saldo: R$ {conta.saldo:.2f}"
+                    f"    - Agência: {conta.agencia} | Conta: {conta.numero},"
+                    " | Saldo: R$ {conta.saldo:.2f}"
                 )
                 print(
-                    f"    - Agência: {conta.agencia} | Conta: {conta.numero} | Saldo: R$ {conta.saldo:.2f}"
+                    f"    - Agência: {conta.agencia} | Conta: {conta.numero},"
+                    " | Saldo: R$ {conta.saldo:.2f}"
                 )
         else:
             log_output.append("  - Nenhuma conta vinculada.")
