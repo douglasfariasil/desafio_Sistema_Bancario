@@ -1,0 +1,16 @@
+[project]
+name = "sistema-bancario"
+version = "0.1.0"
+description = "Sistema Bancário Simples em Python"
+authors = [
+    {name = "douglasfariasil",email = "douglasfariasil@outlook.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
