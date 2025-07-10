@@ -1,17 +1,5 @@
-[2025-07-08 20:11:56] Função: cadastrar_cliente([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: True
-[2025-07-08 20:12:16] Função: criar_conta_corrente(1, [<__main__.Cliente object at 0x77cff0bbb0e0>], [<__main__.ContaCorrente object at 0x77cff0bbb050>]) | Retorno: 2
-[2025-07-08 20:12:20] Função: listar_contas([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: 'Cliente: Osmar | CPF: 33322211144\n    - Agência: 0001 | Conta: 1 | Saldo: R$ 0.00'
-[2025-07-08 20:12:41] Função: realizar_transacao(<__main__.Cliente object at 0x77cff0bbb0e0>, <__main__.ContaCorrente object at 0x77cff0bbb050>, <__main__.Deposito object at 0x77cff0bbb230>) | Retorno: True
-[2025-07-08 20:12:41] Função: realizar_deposito([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: True
-[2025-07-08 20:12:46] Função: listar_contas([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: 'Cliente: Osmar | CPF: 33322211144\n    - Agência: 0001 | Conta: 1 | Saldo: R$ 1200.00'
-[2025-07-08 20:13:06] Função: realizar_transacao(<__main__.Cliente object at 0x77cff0bbb0e0>, <__main__.ContaCorrente object at 0x77cff0bbb050>, <__main__.Deposito object at 0x77cff0bbb200>) | Retorno: True
-[2025-07-08 20:13:06] Função: realizar_deposito([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: True
-[2025-07-08 20:13:20] Função: exibir_extrato([<__main__.Cliente object at 0x77cff0bbb0e0>]) | Retorno: '\nExtrato gerado para conta 0001/1. Saldo: R$ 3000.00'
-[2025-07-09 13:17:04] Função: cadastrar_cliente([<__main__.Cliente object at 0x72d205ebf020>]) | Retorno: True
-[2025-07-09 13:17:23] Função: criar_conta_corrente(1, [<__main__.Cliente object at 0x72d205ebf020>], [<__main__.ContaCorrente object at 0x72d205ebef90>]) | Retorno: 2
-[2025-07-09 13:17:28] Função: listar_contas([<__main__.Cliente object at 0x72d205ebf020>]) | Retorno: 'Cliente: Maria | CPF: 33322211145\n    - Agência: 0001 | Conta: 1 | Saldo: R$ 0.00'
-[2025-07-09 13:18:02] Função: realizar_transacao(<__main__.Cliente object at 0x72d205ebf020>, <__main__.ContaCorrente object at 0x72d205ebef90>, <__main__.Deposito object at 0x72d205ebf170>) | Retorno: True
-[2025-07-09 13:18:02] Função: realizar_deposito([<__main__.Cliente object at 0x72d205ebf020>]) | Retorno: True
-[2025-07-09 13:18:06] Função: listar_contas([<__main__.Cliente object at 0x72d205ebf020>]) | Retorno: 'Cliente: Maria | CPF: 33322211145\n    - Agência: 0001 | Conta: 1 | Saldo: R$ 1200.00'
-[2025-07-09 13:18:40] Função: realizar_transacao(<__main__.Cliente object at 0x72d205ebf020>, <__main__.ContaCorrente object at 0x72d205ebef90>, <__main__.Saque object at 0x72d205ebf140>) | Retorno: True
-[2025-07-09 13:18:40] Função: realizar_saque([<__main__.Cliente object at 0x72d205ebf020>]) | Retorno: True
+
+2025-07-10 13:43:25 - criar_conta_corrente executado com sucesso.
+2025-07-10 13:43:29 - listar_contas executado com sucesso.
+2025-07-10 13:43:57 - realizar_transacao executado com sucesso.
+2025-07-10 13:43:57 - realizar_deposito executado com sucesso.

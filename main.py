@@ -1,11 +1,14 @@
 import textwrap  # Para formatar o endereço
 from datetime import datetime  # Para timesta
+from pathlib import Path  # Para manipulação de caminhos de arquivos
 
 # --- Constantes ---
 AGENCIA_PADRAO = "0001"  # Agência padrão para todas as contas
 LIMITE_SAQUE_VALOR = 1000.0  # Limite de saque por transação
 LIMITE_SAQUES_DIARIOS = 3  # Limite de saques diários
 MAX_TRANSACOES_DIARIAS = 6  # Novo limite de transações
+
+ROOT_PATH = Path(__file__).parent  # Caminho raiz do projeto
 
 
 # --- Decoradores ---
@@ -27,9 +30,14 @@ def log_transacoes(func):
             argumentos = "()"
 
         valor_retornado = repr(resultado)
-        log_entry = f"[{data_hora}] Função: {nome_funcao}{argumentos} | Retorno: {valor_retornado}\n"
-        with open("log.txt", "a") as f:
-            f.write(log_entry)
+        data_hora = f"[{data_hora}] Função: {nome_funcao}{argumentos} | Retorno: {valor_retornado}\n"
+        data_hora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(ROOT_PATH / "log.txt", "a") as arquivo:
+            arquivo.write(f"{data_hora} - {func.__name__} executado com sucesso.\n")
+        if isinstance(resultado, Conta):
+            print(
+                f"\nDEBUG: Transação registrada {func.__name__} na conta {resultado.numero}."
+            )
         return resultado
 
     return wrapper
