@@ -353,9 +353,78 @@ class ContaCorrente(Conta):
             C/C:\t\t{self.numero}
             Titular:\t{self.cliente.nome}
             Saldo:\t\tR$ {self.saldo:.2f}
-        """
-        )  # Formatação melhorada para exibição da conta corrente
+        """)
+    
+# --- Classes de Pessoa e Cliente ---
+class Pessoa:
+    """
+    Classe base para uma pessoa.
+    """
+    def __init__(self, nome, data_nascimento, cpf, endereco):
+        self._nome = nome
+        self._data_nascimento = data_nascimento
+        self._cpf = cpf
+        self._endereco = endereco
 
+    @property
+    def nome(self):
+        return self._nome
+
+    @property
+    def data_nascimento(self):
+        return self._data_nascimento
+
+    @property
+    def cpf(self):
+        return self._cpf
+
+    @property
+    def endereco(self):
+        return self._endereco
+    
+class Cliente(Pessoa):
+    """
+    Representa um cliente do banco, herdando de Pessoa.
+    """
+    def __init__(self, nome, data_nascimento, cpf, endereco):
+        super().__init__(nome, data_nascimento, cpf, endereco)
+        if not cpf.isdigit() or len(cpf) != 11: # Exemplo de validação de CPF (apenas números, 11 dígitos)
+            raise ValueError("CPF inválido! Deve conter 11 dígitos numéricos.")
+        self._cpf = cpf
+        self._contas = []  # Lista de contas associadas ao cliente
+
+    @property
+    def cpf(self):
+        return self._cpf
+
+    @property
+    def contas(self):
+        return self._contas
+
+    def adicionar_conta(self, conta):
+        """Adiciona uma conta à lista de contas do cliente."""
+        self._contas.append(conta)
+
+    # O método 'realizar_transacao' pode ser na conta ou no cliente,
+    # neste modelo, a transação já tem o método 'registrar' que recebe a conta.
+    # Assim, o cliente apenas "instancia" a transação e pede para ela se registrar na conta.
+    def realizar_transacao(self, conta, transacao_obj):
+        """
+        Um cliente pode realizar uma transação em uma de suas contas.
+        A transação é um objeto Saque ou Deposito.
+        """
+        if conta not in self.contas:
+            print("\n--- Erro: Esta conta não pertence a este cliente. ---")
+            return False
+
+        if conta.numero_transacoes_hoje >= MAX_TRANSACOES_DIARIAS:
+            print(f"\n--- Erro: Limite de {MAX_TRANSACOES_DIARIAS} transações diárias atingido para a conta {conta.agencia}/{conta.numero}. ---")
+            return False
+
+        # Chama o método registrar da transação, passando a conta.
+        # As validações específicas de saque/depósito estão dentro de seus métodos registrar.
+        return transacao_obj.registrar(conta)
+    
 
 # --- Funções Auxiliares do Sistema ---
 def buscar_cliente(cpf, clientes):
