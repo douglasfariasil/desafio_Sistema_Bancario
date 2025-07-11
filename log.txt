@@ -1,0 +1,5 @@
+
+2025-07-10 13:43:25 - criar_conta_corrente executado com sucesso.
+2025-07-10 13:43:29 - listar_contas executado com sucesso.
+2025-07-10 13:43:57 - realizar_transacao executado com sucesso.
+2025-07-10 13:43:57 - realizar_deposito executado com sucesso.
